@@ -51,7 +51,7 @@ RUN MRAN=https://mran.microsoft.com/snapshot/2019-04-15 \
   && Rscript -e "install.packages(c('littler', 'docopt'), repo = '$MRAN')" \
   && ln -s /opt/conda/lib/R/library/littler/examples/install2.r /usr/local/bin/install2.r \
   && ln -s /opt/conda/lib/R/library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
-  && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
+  && ln -s /opt/conda/lib/R/library/littler/bin/r /usr/local/bin/r \
   ## TEMPORARY WORKAROUND to get more robust error handling for install2.r prior to littler update
   && wget -O /usr/local/bin/install2.r https://raw.githubusercontent.com/eddelbuettel/littler/master/inst/examples/install2.r
   && chmod +x /usr/local/bin/install2.r
