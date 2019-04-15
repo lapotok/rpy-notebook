@@ -1,12 +1,8 @@
-# Copyright (c) Jupyter Development Team.
+# Copyright (c) lapotok
 # Distributed under the terms of the Modified BSD License.
 ARG BASE_CONTAINER=jupyter/scipy-notebook
 FROM $BASE_CONTAINER
 
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
-
-# Set when building on Travis so that certain long-running build steps can
-# be skipped to shorten build time.
 ARG TEST_ONLY_BUILD
 
 USER root
@@ -46,3 +42,16 @@ RUN conda install --quiet --yes \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+RUN MRAN=https://mran.microsoft.com/snapshot/2019-04-15 \
+#  && echo MRAN=$MRAN >> /etc/environment \
+  && export MRAN=$MRAN \
+  ## MRAN becomes default only in versioned images
+  ## Use littler installation scripts
+  && Rscript -e "install.packages(c('littler', 'docopt'), repo = '$MRAN')" \
+  && ln -s /usr/local/lib/R/site-library/littler/examples/install2.r /usr/local/bin/install2.r \
+  && ln -s /usr/local/lib/R/site-library/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+  && ln -s /usr/local/lib/R/site-library/littler/bin/r /usr/local/bin/r \
+  ## TEMPORARY WORKAROUND to get more robust error handling for install2.r prior to littler update
+  && wget -O /usr/local/bin/install2.r https://raw.githubusercontent.com/eddelbuettel/littler/master/inst/examples/install2.r
+  && chmod +x /usr/local/bin/install2.r
